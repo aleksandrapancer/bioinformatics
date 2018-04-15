@@ -1,0 +1,4 @@
+C:\Users\Alex_2\Desktop\bioinformatics\bioinformatics\bin\Debug\bioinformatics.exe
+C:\Users\Alex_2\Desktop\bioinformatics\bioinformatics\bin\Debug\bioinformatics.pdb
+C:\Users\Alex_2\Desktop\bioinformatics\bioinformatics\obj\x86\Debug\bioinformatics.exe
+C:\Users\Alex_2\Desktop\bioinformatics\bioinformatics\obj\x86\Debug\bioinformatics.pdb
