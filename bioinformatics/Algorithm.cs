@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 
 namespace bioinformatics
 {
@@ -12,15 +11,14 @@ namespace bioinformatics
             int[,] values = new int[seq1.Length + 1, seq2.Length + 1];
             for (int i = 0; i <= seq1.Length; i++)
             {
-                values[i, 0] = i;
+                values[i, 0] = 0;
             };
             for (int j = 0; j <= seq2.Length; j++)
             {
-                values[0, j] = j;
+                values[0, j] = 0;
             };
             return values; 
         }
-
 
         //Levenshtein distance ---- odległość edycyjna
         public void getDistance(char[] seq1,char[] seq2){
@@ -35,12 +33,11 @@ namespace bioinformatics
                 }
             }
 
-            Console.WriteLine("Funkcja edycyjna: " + values[seq1.Length, seq2.Length]);
+            //Console.WriteLine("Funkcja edycyjna: " + values[seq1.Length, seq2.Length]);
         }
 
 
-        //DO SPRAWDZENIA!!!
-        //similarity of sequences funtion ---- funkcja podobieństwa
+        //similarity of sequences function ---- funkcja podobieństwa
         public void getSimilarityFunc(char[] seq1, char[] seq2)
         {
             int[,] values = setArrays(seq1, seq2);

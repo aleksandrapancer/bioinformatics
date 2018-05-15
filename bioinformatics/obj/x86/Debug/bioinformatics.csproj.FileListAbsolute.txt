@@ -2,3 +2,9 @@ C:\Users\Alex_2\Desktop\bioinformatics\bioinformatics\bin\Debug\bioinformatics.e
 C:\Users\Alex_2\Desktop\bioinformatics\bioinformatics\bin\Debug\bioinformatics.pdb
 C:\Users\Alex_2\Desktop\bioinformatics\bioinformatics\obj\x86\Debug\bioinformatics.exe
 C:\Users\Alex_2\Desktop\bioinformatics\bioinformatics\obj\x86\Debug\bioinformatics.pdb
+C:\Users\pance\Desktop\bioinformatics\bioinformatics\bin\Debug\bioinformatics.exe
+C:\Users\pance\Desktop\bioinformatics\bioinformatics\bin\Debug\bioinformatics.pdb
+C:\Users\pance\Desktop\bioinformatics\bioinformatics\obj\x86\Debug\bioinformatics.csprojAssemblyReference.cache
+C:\Users\pance\Desktop\bioinformatics\bioinformatics\obj\x86\Debug\bioinformatics.csproj.CoreCompileInputs.cache
+C:\Users\pance\Desktop\bioinformatics\bioinformatics\obj\x86\Debug\bioinformatics.exe
+C:\Users\pance\Desktop\bioinformatics\bioinformatics\obj\x86\Debug\bioinformatics.pdb
