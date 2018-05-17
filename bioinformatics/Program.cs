@@ -31,58 +31,14 @@ namespace bioinformatics
                 Console.WriteLine(e.Message);
             }
 
-            int gap_penalty = -2;
+
+            AlignmentWithPenalty withPenalty = new AlignmentWithPenalty();
 
 
-            //example char[]
-            char[] s1 = { 'T', 'G', 'G', 'T', 'G' };
-            char[] s2 = { 'A', 'T', 'C', 'G', 'T' };
+            int[,] arr;
+            arr = withPenalty.CheckAlignment();
 
-
-            int[,] score = new int[s1.Length+1, s1.Length + 1];
-
-            for (int i = 1; i< s1.Length + 1; i++) {
-                for (int j = 1; j < s1.Length + 1; j++)
-                {
-                    if (s1[i-1] == s2[j-1]) { score[j,i] = 1; }
-                    else if (s1[i - 1] != s2[j - 1]) { score[j,i] = -1; }
-                    // Console.Write(score[i]); 
-                }
-            }
-
-
-            int[,] arr = new int[s1.Length + 1, s2.Length + 1];
-
-
-            for (int i = 0; i < s2.Length + 1; i++){
-                for (int j = 0; j < s1.Length + 1; j++) { 
-
-                    if (i == 0 && j == 0)
-                    {
-                        arr[i, j] = 0;
-                    }
-                    else if (j == 0)
-                    {
-                        arr[i, j] = arr[i - 1, j] + gap_penalty;
-                    }
-                    else if (i == 0)
-                    {
-                        arr[i, j] = arr[i, j - 1] + gap_penalty;
-                    }
-
-                    if (i >= 1 && j >= 1)
-                    {
-
-                        int a = arr[i - 1, j - 1] + score[i,j];
-                        int b = arr[i - 1, j] + gap_penalty;
-                        int c = arr[i, j - 1] + gap_penalty;
-
-                        arr[i,j] = Math.Max(a,Math.Max(b,c));
-                    }
-                }
-            }
-
-
+            /*
             for (int x = 0; x < 6; x++) {
                 Console.Write("\n"); 
 
@@ -90,7 +46,21 @@ namespace bioinformatics
                     Console.Write(arr[x,y]);
                 }
             }
+            */
 
+          
+            int[,] backtrace = new int[arr.GetLength(0), arr.GetLength(1)];
+            int i = arr.GetLength(0) - 1;
+            int j = arr.GetLength(1) - 1;
+
+            while (i>0 && j>0)
+            {
+                int min = Math.Max(arr[i - 1, j - 1], Math.Max(arr[i - 1, j], arr[i, j - 1]));
+
+                if (min == arr[i - 1, j - 1]) { i -= 1; j -= 1; Console.WriteLine(arr[i, j]); }
+                else if (min == arr[i - 1, j]) { i -= 1; Console.WriteLine(arr[i, j]); }
+                else if (min == arr[i, j - 1]) { j -= 1; Console.WriteLine(arr[i, j]); }
+            }
         }
     }
 }
