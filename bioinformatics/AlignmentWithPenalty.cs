@@ -1,64 +1,93 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace bioinformatics
 {
     class AlignmentWithPenalty
     {
-        int gap_penalty = -2;
+        int gap_penalty = -1;
 
+        public int[,] GetSimilarityMatrix(char[] s1, char[] s2) {
+            int[,] score = new int[s2.Length, s1.Length];
 
-        //example char[]
-        char[] s1 = { 'T', 'G', 'G', 'T', 'G' };
-        char[] s2 = { 'A', 'T', 'C', 'G', 'T' };
-
-        public int[,] CheckAlignment()
-        {
-            int[,] score = new int[s1.Length + 1, s1.Length + 1];
-
-            for (int i = 1; i < s1.Length + 1; i++)
-            {
-                for (int j = 1; j < s1.Length + 1; j++)
-                {
-                    if (s1[i - 1] == s2[j - 1]) { score[j, i] = 1; }
-                    else if (s1[i - 1] != s2[j - 1]) { score[j, i] = -1; }
-                    // Console.Write(score[i]); 
+            for (int i = 1; i < s2.Length; i++) {
+                for (int j = 1; j < s1.Length; j++) {
+                    if (s1[j] != s2[i]) {
+                        score[i, j] = -1;
+                    } else {
+                        score[i, j] = 1;
+                    }
                 }
             }
 
+            int[,] arr = new int[s1.Length, s2.Length];
+            for (int i = 0; i < s2.Length; i++) {
+                for (int j = 0; j < s1.Length; j++) {
 
-            int[,] arr = new int[s1.Length + 1, s2.Length + 1];
-
-
-            for (int i = 0; i < s2.Length + 1; i++)
-            {
-                for (int j = 0; j < s1.Length + 1; j++)
-                {
-
-                    if (i == 0 && j == 0)
-                    {
+                    if (i == 0 && j == 0) {
                         arr[i, j] = 0;
                     }
-                    else if (j == 0)
-                    {
+                    else if (j == 0) {
                         arr[i, j] = arr[i - 1, j] + gap_penalty;
                     }
-                    else if (i == 0)
-                    {
+                    else if (i == 0) {
                         arr[i, j] = arr[i, j - 1] + gap_penalty;
                     }
-
-                    if (i >= 1 && j >= 1)
-                    {
+                    else if (i >= 1 && j >= 1) {
                         arr[i, j] = Math.Max(arr[i - 1, j - 1] + score[i, j], Math.Max(arr[i - 1, j] + gap_penalty, arr[i, j - 1] + gap_penalty));
                     }
-
                 }
             }
 
-            return arr; 
+            return arr;
         }
+
+
+        public void GetBacktrace(int[,] arr, char[] s1, char[] s2)
+        {
+            int i = s1.Length - 1;
+            int j = s2.Length - 1;
+
+            StringBuilder alignmentA = new StringBuilder();
+            StringBuilder alignmentB = new StringBuilder();
+
+            while (i > 0 && j > 0)
+            {
+                int max = Math.Max(arr[i - 1, j - 1], Math.Max(arr[i - 1, j], arr[i, j - 1]));
+
+                    if (max == arr[i - 1, j - 1])
+                    {
+                        alignmentA.Append(s2[i]);
+                        alignmentB.Append(s1[j]);
+                
+                        i -= 1;
+                        j -= 1;
+                    }
+                    else if (max == arr[i - 1, j])
+                    {
+                        alignmentA.Append(s2[i]);
+                        alignmentB.Append('-');
+                        i -= 1;
+                    }
+                    else if (max == arr[i, j - 1])
+                    {
+                        alignmentA.Append('-');
+                        alignmentB.Append(s1[j]);
+                        j -= 1;
+                    }
+            }
+
+            char[] a = new char[alignmentA.Length];
+            a = alignmentA.ToString().ToCharArray();
+            Array.Reverse(a);
+            char[] b = new char[alignmentB.Length];
+            b = alignmentB.ToString().ToCharArray();
+            Array.Reverse(b);
+
+
+            Console.WriteLine(a);
+            Console.WriteLine(b);
+        }
+
     }
 }

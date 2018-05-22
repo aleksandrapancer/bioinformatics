@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace bioinformatics
 {
@@ -32,35 +33,23 @@ namespace bioinformatics
             }
 
 
+            //example char[]
+            // char[] s11 = { 'T', 'G', 'G', 'T', 'G' };
+            //char[] s22 = { 'A', 'T', 'C', 'G', 'T' };                   
+            char[] s11 = { 'G', 'C', 'A', 'T', 'G','C','U' };
+            char[] s22 = { 'G', 'A', 'T', 'T', 'A','C','A' };            
+
+            char[] s1 = new char[s11.Length + 1];
+            char[] s2 = new char[s22.Length + 1];
+            s1[0] = ' ';    
+            s2[0] = ' ';
+            s11.CopyTo(s1,1);
+            s22.CopyTo(s2,1);
+
             AlignmentWithPenalty withPenalty = new AlignmentWithPenalty();
-
-
-            int[,] arr;
-            arr = withPenalty.CheckAlignment();
-
-            /*
-            for (int x = 0; x < 6; x++) {
-                Console.Write("\n"); 
-
-                for (int y = 0; y < 6; y++) {
-                    Console.Write(arr[x,y]);
-                }
-            }
-            */
-
-          
-            int[,] backtrace = new int[arr.GetLength(0), arr.GetLength(1)];
-            int i = arr.GetLength(0) - 1;
-            int j = arr.GetLength(1) - 1;
-
-            while (i>0 && j>0)
-            {
-                int min = Math.Max(arr[i - 1, j - 1], Math.Max(arr[i - 1, j], arr[i, j - 1]));
-
-                if (min == arr[i - 1, j - 1]) { i -= 1; j -= 1; Console.WriteLine(arr[i, j]); }
-                else if (min == arr[i - 1, j]) { i -= 1; Console.WriteLine(arr[i, j]); }
-                else if (min == arr[i, j - 1]) { j -= 1; Console.WriteLine(arr[i, j]); }
-            }
+            int[,] arr = withPenalty.GetSimilarityMatrix(s1,s2);
+            withPenalty.GetBacktrace(arr,s1,s2);    
+        
         }
     }
 }
