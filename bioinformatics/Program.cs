@@ -46,10 +46,15 @@ namespace bioinformatics
             s11.CopyTo(s1,1);
             s22.CopyTo(s2,1);
 
+
+            Console.WriteLine("Needleman-Wunsch algorithm with gap penalty");
             AlignmentWithPenalty withPenalty = new AlignmentWithPenalty();
             int[,] arr = withPenalty.GetSimilarityMatrix(s1,s2);
-            withPenalty.GetBacktrace(arr,s1,s2);    
-        
+            withPenalty.GetBacktrace(arr,s1,s2);
+
+            Console.WriteLine("Hirschberg algorithm without gap penalty");
+            Hirschberg hirshberg = new Hirschberg();
+            hirshberg.GetAlignment(s1,s1,0,s1.Length-1,0,s2.Length-1); 
         }
     }
 }

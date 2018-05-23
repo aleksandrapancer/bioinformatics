@@ -38,7 +38,6 @@ namespace bioinformatics
                     }
                 }
             }
-
             return arr;
         }
 
