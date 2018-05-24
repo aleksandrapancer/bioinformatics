@@ -1,111 +1,134 @@
 ﻿using System;
 using System.Linq;
-
+using System.Text;
 
 namespace bioinformatics
 {
     class Hirschberg
     {
-        int gap_penalty = -2;
 
-        public int[] GetNWScore(char[] s1, char[] s2, int side)
-        {
-            int[,] score = new int[s2.Length, s1.Length];
-            int[] last = new int[s1.Length];
+        public void GetAlignment(char[] s1, char[] s2) {
+            StringBuilder Z = new StringBuilder();
+            StringBuilder W = new StringBuilder();
 
-            for (int i = 1; i < s2.Length; i++)
+            if (s1.Length == 0)
             {
-                for (int j = 1; j < s1.Length; j++)
+                for (int i = 1; i < s2.Length - 1; i++)
                 {
-                    if (s1[j] != s2[i])
-                    {
-                        score[i, j] = -1;
-                    }
-                    else
-                    {
-                        score[i, j] = 1;
-                    }
+                    Z.Append("-");
+                    W.Append(s2[i]);
                 }
             }
-
-            int[,] arr = new int[s1.Length, s2.Length];
-            arr[0, 0] = 0;
-
-            switch (side)
+            else if (s2.Length == 0)
             {
-                case -1:
-                    for (int j = 1; j < s2.Length - 1; j++)
-                    {
-                        arr[0, j] = arr[0, j - 1];
+                for (int i = 1; i < s2.Length - 1; i++)
+                {
+                    Z.Append(s1[i]);
+                    W.Append("-");
+                }
+            }
+            else if (s1.Length == 1 || s2.Length == 1)
+            {
+                AlignmentWithPenalty withPenalty = new AlignmentWithPenalty();
+                int[,] arr = withPenalty.GetSimilarityMatrix(s1, s2);
+                withPenalty.GetBacktrace(arr, s1, s2);
+            }
+            else {
+                int xlen = s1.Length;
+                int ylen = s2.Length;
+                int xmid = xlen / 2;
+
+                int[] prefScore = GetNWScore(s1,s2,xmid,"pref");
+                int[] suffScore = GetNWScore(s1,s2,xmid,"suff");
+                int[] score = new int[prefScore.Length];
+
+                for (int i = 0; i < s2.Length; i++) {
+                    score[i] = prefScore[i] + suffScore[i];
+                }
+
+                int max = score.Max();
+                int ymid = Array.IndexOf(score, max);
+
+                char[] pref_s1 = new char[xmid];
+                char[] suff_s1 = new char[s1.Length - xmid];
+                char[] pref_s2 = new char[ymid];
+                char[] suff_s2 = new char[s2.Length - ymid];
+
+                Array.Copy(s1, 0, pref_s1, 0, xmid);
+                Array.Copy(s2, 0, pref_s2, 0, ymid);
+                Array.Copy(s1, 0, suff_s1, 0, s1.Length - xmid);
+                Array.Copy(s1, 0, suff_s2, 0, s2.Length - ymid);
+
+                GetAlignment(pref_s1, pref_s2);
+                GetAlignment(suff_s1, suff_s2);
+            }
+        }
+
+
+        public int[] GetNWScore(char[] s1, char[] s2, int xmid, string align) {
+            int gap_penalty = -2;
+
+            int[] last = new int[s2.Length];
+            int[,] similarity = GetSimilarityMatrix(s1, s2);
+            int[,] score = new int[s1.Length, s2.Length];
+
+            switch (align)
+            {
+                case "pref":
+                    for (int j = 1; j < xmid; j++) {
+                        score[0, j] = score[0, j - 1];
                     }
 
-                    for (int i = 1; i < s1.Length - 1; i++)
-                    {
-                        arr[i, 0] = arr[i - 1, 0];
+                    for (int i = 1; i < s2.Length - 1; i++) {
+                        score[i, 0] = score[i-1, 0];
 
-                        for (int j = 1; j < s2.Length - 1; j++)
-                        {
-                            arr[i, j] = Math.Max(arr[i - 1, j - 1] + score[i, j], Math.Max(arr[i - 1, j] + gap_penalty, arr[i, j - 1] + gap_penalty));
+                        for (int j = 1; j < xmid; j++)  {
+                            score[i, j] = Math.Max(score[i - 1, j - 1] + score[i, j], Math.Max(score[i - 1, j]+gap_penalty, score[i, j - 1]+gap_penalty));
                         }
                     }
 
-                    for (int j = 0; j < s2.Length - 1; j++)
-                    {
-                        last[j] = arr[s1.Length - 1, j];
+                    for (int j = 0; j < s2.Length - 1; j++)   {
+                        last[j] = score[xmid, j];
                     }
+
                     break;
-                case 1:
-                    for (int j = s2.Length - 1; j > s1.Length / 2; j--)
-                    {
-                        arr[0, j] = arr[0, j - 1];
+                case "suff":
+
+                    for (int j = s1.Length - 1; j > xmid; j--) {
+                        score[0, j] = score[0, j - 1];
                     }
+                    for (int i = s1.Length-2; i > 1; i--)   {
+                        score[i, 0] = score[i - 1, 0];
 
-                    for (int i = s1.Length - 1; i > s1.Length / 2; i--)
-                    {
-                        arr[i, 0] = arr[i - 1, 0];
+                        for (int j = s1.Length-1; j > xmid; j--)   {
+                            score[i, j] = Math.Max(score[i - 1, j - 1] + score[i, j], Math.Max(score[i - 1, j], score[i, j - 1]));
 
-                        for (int j = s2.Length - 1; j > s2.Length / 2; j--)
-                        {
-                            arr[i, j] = Math.Max(arr[i - 1, j - 1] + score[i, j], Math.Max(arr[i - 1, j] + gap_penalty, arr[i, j - 1] + gap_penalty));
                         }
                     }
 
-                    for (int j = s2.Length - 1; j > s2.Length / 2; j--)
-                    {
-                        last[j] = arr[s1.Length - 1, j];
+                    for (int i = s2.Length - 1; i > 0; i--) {
+                        last[i] = score[i, xmid];
                     }
                     break;
             }
             return last;
         }
 
-        public void GetAlignment(char[] s1, char[] s2, int s1_start, int s1_stop, int s2_start, int s2_stop)
-        {
-            int[] scoreL = new int[s1.Length / 2];
-            int[] scoreR = new int[s1.Length / 2];
-            int[] score = new int[s2.Length - 1];
 
-            scoreL = GetNWScore(s1,s2,-1);
-            scoreR = GetNWScore(s1,s2, 1);
-
-            int max = 0;
-            int vmax = scoreL[0] + scoreR[0];
-            
-            for (int j = s2_start; j < s2_stop; j++)
-            {
-                score[j] = scoreL[j] + scoreR[j];
-
-                if (score[j] > vmax)
-                {
-                    vmax = score[];
-                    max = j;
+        public int[,] GetSimilarityMatrix(char[] s1, char[]s2) {
+        
+            int[,] similar = new int[s2.Length, s1.Length];
+            for (int i = 1; i < s2.Length; i++) {
+                for (int j = 1; j < s1.Length; j++) {
+                    if (s1[j] != s2[i]) {
+                        similar[i, j] = -1;
+                    } else {
+                        similar[i, j] = 1;
+                    }
                 }
             }
 
-            GetAlignment(s1, s2, s1_start, s1_stop, s2_start, s2_stop);
-            GetAlignment(s1, s2, s1_start, s1_stop, s2_start, s2_stop);
+            return similar;
         }
-
     }
 }
-

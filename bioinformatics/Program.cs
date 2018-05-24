@@ -53,8 +53,8 @@ namespace bioinformatics
             withPenalty.GetBacktrace(arr,s1,s2);
 
             Console.WriteLine("Hirschberg algorithm without gap penalty");
-            Hirschberg hirshberg = new Hirschberg();
-            hirshberg.GetAlignment(s1,s1,0,s1.Length-1,0,s2.Length-1); 
+            Hirschberg hirschberg = new Hirschberg();
+            hirschberg.GetAlignment(s1,s2); 
         }
     }
 }
