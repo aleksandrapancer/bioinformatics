@@ -32,19 +32,16 @@ namespace bioinformatics
                 Console.WriteLine(e.Message);
             }
 
+            //sample sequences  
+            //char[] s11 = { 'G', 'C', 'A', 'T', 'G','C','U' };
+            //char[] s22 = { 'G', 'A', 'T', 'T', 'A','C','A' };            
 
-            //example char[]
-            // char[] s11 = { 'T', 'G', 'G', 'T', 'G' };
-            //char[] s22 = { 'A', 'T', 'C', 'G', 'T' };                   
-            char[] s11 = { 'G', 'C', 'A', 'T', 'G','C','U' };
-            char[] s22 = { 'G', 'A', 'T', 'T', 'A','C','A' };            
-
-            char[] s1 = new char[s11.Length + 1];
-            char[] s2 = new char[s22.Length + 1];
+            char[] s1 = new char[seq1.Length + 1];
+            char[] s2 = new char[seq2.Length + 1];
             s1[0] = ' ';    
             s2[0] = ' ';
-            s11.CopyTo(s1,1);
-            s22.CopyTo(s2,1);
+            seq1.CopyTo(s1,1);
+            seq2.CopyTo(s2,1);
 
 
             Console.WriteLine("Needleman-Wunsch algorithm with gap penalty");
@@ -52,7 +49,9 @@ namespace bioinformatics
             int[,] arr = withPenalty.GetSimilarityMatrix(s1,s2);
             withPenalty.GetBacktrace(arr,s1,s2);
 
-            Console.WriteLine("Hirschberg algorithm without gap penalty");
+
+
+            Console.WriteLine("\nHirschberg algorithm without gap penalty");
             Hirschberg hirschberg = new Hirschberg();
             hirschberg.GetAlignment(s1,s2); 
         }
