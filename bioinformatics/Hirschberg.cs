@@ -56,11 +56,14 @@ namespace bioinformatics
 
                 Array.Copy(s1, 0, pref_s1, 0, xmid);
                 Array.Copy(s2, 0, pref_s2, 0, ymid);
-                Array.Copy(s1, 0, suff_s1, 0, s1.Length - xmid);
-                Array.Copy(s1, 0, suff_s2, 0, s2.Length - ymid);
+                Array.Copy(s1, xmid, suff_s1, 0, s1.Length - xmid);
+                Array.Copy(s1, ymid, suff_s2, 0, s2.Length - ymid);
 
                 GetAlignment(pref_s1, pref_s2);
-                GetAlignment(suff_s1, suff_s2);
+                if (ymid != 0)
+                {
+                    GetAlignment(suff_s1, suff_s2);
+                }
             }
         }
 
@@ -68,8 +71,16 @@ namespace bioinformatics
         public int[] GetNWScore(char[] s1, char[] s2, int xmid, string align) {
             int gap_penalty = -2;
 
+
+            char[] seq1 = new char[s1.Length + 1];
+            char[] seq2 = new char[s2.Length + 1];
+            seq1[0] = ' ';
+            seq2[0] = ' ';
+            s1.CopyTo(seq1, 1);
+            s2.CopyTo(seq2, 1);
+
             int[] last = new int[s2.Length];
-            int[,] similarity = GetSimilarityMatrix(s1, s2);
+            int[,] similarity = GetSimilarityMatrix(seq1, seq2);
             int[,] score = new int[s1.Length, s2.Length];
 
             switch (align)
@@ -101,8 +112,7 @@ namespace bioinformatics
                         score[i, 0] = score[i - 1, 0];
 
                         for (int j = s1.Length-1; j > xmid; j--)   {
-                            score[i, j] = Math.Max(score[i - 1, j - 1] + score[i, j], Math.Max(score[i - 1, j], score[i, j - 1]));
-
+                            score[i, j] = Math.Max(score[i - 1, j - 1] + score[i, j], Math.Max(score[i - 1, j]+gap_penalty, score[i, j - 1]+gap_penalty));
                         }
                     }
 

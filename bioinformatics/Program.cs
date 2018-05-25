@@ -49,11 +49,9 @@ namespace bioinformatics
             int[,] arr = withPenalty.GetSimilarityMatrix(s1,s2);
             withPenalty.GetBacktrace(arr,s1,s2);
 
-
-
             Console.WriteLine("\nHirschberg algorithm without gap penalty");
             Hirschberg hirschberg = new Hirschberg();
-            hirschberg.GetAlignment(s1,s2); 
+            hirschberg.GetAlignment(seq1,seq2); 
         }
     }
 }

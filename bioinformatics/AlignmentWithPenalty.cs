@@ -5,6 +5,9 @@ namespace bioinformatics
 {
     class AlignmentWithPenalty
     {
+
+        //Needleman-Wunch algorithm 
+
         int gap_penalty = -1;
 
         public int[,] GetSimilarityMatrix(char[] s1, char[] s2) {
